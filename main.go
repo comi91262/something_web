@@ -5,9 +5,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/ykonomi/something_web/rest/controller"
+
 	"github.com/ykonomi/something_web/rest/middleware"
+
+	"log"
+	"os"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ykonomi/something_web/graph"
+	"github.com/ykonomi/something_web/graph/generated"
 )
+
+const defaultPort = "3000"
 
 func main() {
 	// var wr = bufio.NewWriter(os.Stdout)
@@ -36,16 +46,29 @@ func main() {
 		})
 	})
 
-	bookEngine := engine.Group("/book")
-	{
-		v1 := bookEngine.Group("/v1")
-		{
-			v1.POST("/add", controller.BookAdd)
-			v1.GET("/list", controller.BookList)
-			v1.PUT("/update", controller.BookUpdate)
-			v1.DELETE("/delete", controller.BookDelete)
-		}
+	//	bookEngine := engine.Group("/book")
+	//	{
+	//		v1 := bookEngine.Group("/v1")
+	//		{
+	//			v1.POST("/add", controller.BookAdd)
+	//			v1.GET("/list", controller.BookList)
+	//			v1.PUT("/update", controller.BookUpdate)
+	//			v1.DELETE("/delete", controller.BookDelete)
+	//		}
+	//	}
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
 	}
 
-	engine.Run(":3000")
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+
+	// TODO to gin
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+
+	engine.Run(":" + defaultPort)
 }
