@@ -1,5 +1,5 @@
-## 凡例集、かつコピペ用技術カタログ
+## Web技術凡例集、自分のコピペ用
 
-- 画像の表示 
+- 画像の表示 (gin)
 - REST API server 
 - GraphQL Server
