@@ -1,2 +1,3 @@
 #! /usr/bin/env bash
-docker-compose up -d --build
+ docker build -t dependencies .
+# docker-compose up -d --build
