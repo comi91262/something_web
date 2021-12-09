@@ -4,7 +4,6 @@ COPY wait_for_db.sh /go/src/app/.
 COPY create_database.sh /go/src/app/.
 COPY migrations /go/src/app/migrations
 
-
 RUN go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.1.0
 
 RUN apt-get update 

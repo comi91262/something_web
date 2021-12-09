@@ -1,7 +1,7 @@
 all: build run
 
 build-dependencies:
-	docker build -t dependencies .
+	docker build -t dependencies -f dependencies/Dockerfile dependencies	
 
 build: build-dependencies
 	docker-compose build
