@@ -2,7 +2,7 @@ version: "3"
 
 services:
  app-orm:
-    build: ./orm
+    build: ./app-orm
     ports:
       - 6000:6000
     depends_on:
@@ -11,6 +11,6 @@ services:
     build: ./db
     environment:
       MYSQL_ROOT_PASSWORD: password 
-      MYSQL_DATABASE: engineer-exam
+        #      MYSQL_DATABASE: engineer-exam
     ports:
       - 3306:3306

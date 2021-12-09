@@ -5,7 +5,7 @@ cmd="$1"
 
 while :
 do
-  if mysql -h"engineer-exam-mysql-host" -u "root" -p"password" -e "quit"; then
+  if mysql -h"db" -u "root" -p"password" -e "quit"; then
     >&2 echo "Mysql is up"
     break
   else
