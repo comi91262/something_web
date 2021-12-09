@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine AS dep
+FROM golang:1.17 AS dep
 
 # Add the module files and download dependencies.
 COPY ./go.mod /go/src/app/go.mod

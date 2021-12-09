@@ -10,6 +10,13 @@ services:
     tty: true
     depends_on:
         - db
+ migration:
+    build: ./migration
+    environment:
+      MYSQL_URL: "mysql://root:password@tcp(db)/world"
+    tty: true
+    depends_on:
+        - db
  db:
     build: ./db
     environment:

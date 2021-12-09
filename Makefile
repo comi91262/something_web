@@ -8,3 +8,9 @@ build: build-dependencies
 
 run:
 	docker-compose up
+
+down:
+	docker-compose down
+
+rm:
+	docker-compose down --rmi all --volumes
