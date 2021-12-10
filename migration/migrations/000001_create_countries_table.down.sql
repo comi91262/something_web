@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `country`;
+DROP TABLE IF EXISTS `countries`;
