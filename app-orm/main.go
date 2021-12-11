@@ -3,12 +3,21 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"text/template"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-const defaultPort = "3000"
+const (
+	defaultPort  = "3000"
+	pathTopPage  = "/"
+	pathShowPage = "/show"
+
+	indexPagePath = "static/index.html"
+	showPagePath  = "static/list.html"
+)
 
 type Country struct {
 	Code           string  `gorm:"char(3); not null; default ''"`
@@ -28,14 +37,68 @@ type Country struct {
 	Code2          string  `gorm:"char(2); not null; default ''"`
 }
 
-type Product struct {
-	gorm.Model
-	Code  string
-	Price uint
+//type Product struct {
+//	gorm.Model
+//Code  string
+//c	Price uint
+//c}
+
+func showTopPage(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles(indexPagePath)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	t.Execute(w, map[int]int{})
+
+	//	term, err := loadTerm(dateTimePath)
+	//	if err != nil {
+	//		t.Execute(w, map[string]bool{"showBanner": false})
+	//		return
+	//	}
+	//
+	//	t.Execute(w, map[string]bool{"showBanner": inTerm(time.Now(), term)})
+}
+
+func showPage(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles(showPagePath)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	dsn := "root:password@tcp(db:3306)/world?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Migrate the schema
+	// db.AutoMigrate(&Product{})
+
+	// Create
+	// db.Create(&Product{Code: "D42", Price: 100})
+
+	var country Country
+	// Read
+	db.First(&country)
+	t.Execute(w, map[string]Country{"country": country})
+	//	term, err := loadTerm(dateTimePath)
+	//	if err != nil {
+	//		t.Execute(w, map[string]bool{"showBanner": false})
+	//		return
+	//	}
+	//
+	//	t.Execute(w, map[string]bool{"showBanner": inTerm(time.Now(), term)})
 }
 
 func main() {
-	// http.HandleFunc(pathTopPage, showTopPage)
+	http.HandleFunc(pathTopPage, showTopPage)
+	http.HandleFunc(pathShowPage, showPage)
+
+	err := http.ListenAndServe(":"+defaultPort, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// gorm
 	dsn := "root:password@tcp(db:3306)/world?charset=utf8mb4&parseTime=True&loc=Local"

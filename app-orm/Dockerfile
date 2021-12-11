@@ -10,10 +10,12 @@ ENTRYPOINT [ "/go/bin/app-orm" ]
 
 FROM alpine:latest
 
-
 RUN apk add --no-cache mysql-client
-COPY wait_for_db.sh /bin/wait_for_db.sh
-COPY --from=builder /go/bin/app-orm /bin/app-orm
 
+WORKDIR /var/www
 
-ENTRYPOINT ["/bin/wait_for_db.sh", "/bin/app-orm" ]
+COPY --from=builder /go/src/app/static /var/www/static
+COPY --from=builder /go/bin/app-orm /var/www/app-orm
+COPY --from=builder /go/src/app/wait_for_db.sh /bin/wait_for_db.sh
+
+ENTRYPOINT ["/bin/wait_for_db.sh", "/var/www/app-orm" ]
