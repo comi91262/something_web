@@ -51,7 +51,7 @@ func main() {
 
 	var country Country
 	// Read
-	db.First(&country, 1)
+	db.First(&country)
 	fmt.Printf("%v\n", country)
 	//db.First(&product, 1)                 // find product with integer primary key
 	//db.First(&product, "code = ?", "D42") // find product with code D42
