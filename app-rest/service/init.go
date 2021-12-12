@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"../model"
 	"github.com/go-xorm/xorm"
-
-	"github.com/ykonomi/something_web/rest/model"
 )
 
 var DbEngine *xorm.Engine

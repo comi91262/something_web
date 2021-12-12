@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"../model"
+	"../service"
 	"github.com/gin-gonic/gin"
-	"github.com/ykonomi/something_web/rest/model"
-	"github.com/ykonomi/something_web/rest/service"
 )
 
 func BookAdd(c *gin.Context) {

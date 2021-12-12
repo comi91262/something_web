@@ -1,6 +1,6 @@
 package service
 
-import "github.com/ykonomi/something_web/rest/model"
+import "../model"
 
 type BookService struct{}
 
