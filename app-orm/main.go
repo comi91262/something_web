@@ -20,7 +20,7 @@ const (
 )
 
 type Country struct {
-	Code           string  `gorm:"char(3); not null; default ''"`
+	Code           string  `gorm:"primaryKey; char(3); not null; default ''"`
 	Name           string  `gorm:"char(52); not null; default ''"`
 	Continent      string  `gorm:"enum('Asia','Europe','North America','Africa','Oceania','Antarctica','South America'); not null; default 'Asia'"`
 	Region         string  `gorm:"char(26); not null; default ''"`
