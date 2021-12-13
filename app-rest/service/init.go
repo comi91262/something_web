@@ -5,22 +5,20 @@ import (
 	"fmt"
 	"log"
 
-	"../model"
-	"github.com/go-xorm/xorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DbEngine *xorm.Engine
+var dbConn *gorm.DB
+
+const dsn = "root:password@tcp(db:3306)/world?charset=utf8mb4&parseTime=True&loc=Local"
 
 func init() {
-	driverName := "mysql"
-	DsName := "root:root@(192.168.99.100:3306)/gin?charset=utf8"
 	err := errors.New("")
-	DbEngine, err = xorm.NewEngine(driverName, DsName)
-	if err != nil && err.Error() != "" {
-		log.Fatal(err.Error())
+	dbConn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
 	}
-	DbEngine.ShowSQL(true)
-	DbEngine.SetMaxOpenConns(2)
-	DbEngine.Sync2(new(model.Book))
+
 	fmt.Println("init data base ok")
 }

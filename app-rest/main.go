@@ -2,10 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
-
-	"./controller"
-	"./middleware"
+	"github.com/ykonomi/something_web/controller"
+	"github.com/ykonomi/something_web/middleware"
+	_ "gorm.io/driver/mysql"
 )
 
 const defaultPort = "3000"

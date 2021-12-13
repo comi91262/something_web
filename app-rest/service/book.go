@@ -1,39 +1,39 @@
 package service
 
-import "../model"
+import "github.com/ykonomi/something_web/model"
 
 type BookService struct{}
 
 func (BookService) SetBook(book *model.Book) error {
-	_, err := DbEngine.Insert(book)
-	if err != nil {
-		return err
+	result := dbConn.Create(&book)
+	if result.Error != nil {
+		return result.Error
 	}
 	return nil
 }
 
 func (BookService) GetBookList() []model.Book {
-	tests := make([]model.Book, 0)
-	err := DbEngine.Distinct("id", "title", "content").Limit(10, 0).Find(&tests)
-	if err != nil {
-		panic(err)
+	var books []model.Book
+
+	result := dbConn.Select("id", "title", "content").Limit(10).Find(&books)
+	if result.Error != nil {
+		panic(result.Error)
 	}
-	return tests
+	return books
 }
 
 func (BookService) UpdateBook(newBook *model.Book) error {
-	_, err := DbEngine.Id(newBook.Id).Update(newBook)
-	if err != nil {
-		return err
+	result := dbConn.Save(&newBook)
+	if result.Error != nil {
+		panic(result.Error)
 	}
 	return nil
 }
 
 func (BookService) DeleteBook(id int) error {
-	book := new(model.Book)
-	_, err := DbEngine.Id(id).Delete(book)
-	if err != nil {
-		return err
+	result := dbConn.Delete(&model.Book{}, id)
+	if result.Error != nil {
+		panic(result.Error)
 	}
 	return nil
 }
