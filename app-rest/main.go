@@ -7,7 +7,7 @@ import (
 	_ "gorm.io/driver/mysql"
 )
 
-const defaultPort = "3000"
+const defaultPort = "8080"
 
 func main() {
 	engine := gin.Default()
@@ -25,5 +25,4 @@ func main() {
 		}
 	}
 	engine.Run(":" + defaultPort)
-
 }

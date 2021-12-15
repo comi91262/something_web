@@ -8,7 +8,15 @@ services:
     ports:
       - 3000:3000
     depends_on:
-        - db
+        - migration
+ app-rest:
+    build: ./app-rest
+    environment:
+      MYSQL_URL: "mysql://root:password@tcp(db:3306)/rest"
+    ports:
+      - 8080:8080
+    depends_on:
+        - migration
  migration:
     build: ./migration
     environment:
