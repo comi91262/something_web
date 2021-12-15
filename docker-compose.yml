@@ -8,7 +8,7 @@ services:
     ports:
       - 3000:3000
     depends_on:
-        - migration
+        - db
  app-rest:
     build: ./app-rest
     environment:
@@ -16,18 +16,16 @@ services:
     ports:
       - 8080:8080
     depends_on:
-        - migration
+        - db
  migration:
     build: ./migration
     environment:
       MYSQL_URL: "mysql://root:password@tcp(db)/world"
-    tty: true
     depends_on:
         - db
  db:
     build: ./db
     environment:
       MYSQL_ROOT_PASSWORD: password 
-        #      MYSQL_DATABASE: engineer-exam
     ports:
       - 3306:3306
