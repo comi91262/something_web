@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"os/exec"
 
 	// without the underscore _, you will get imported but not
 	// used error message
@@ -17,6 +18,7 @@ const (
 )
 
 func main() {
+
 	conn, err := sql.Open(dbName, dbURL)
 	defer conn.Close()
 
@@ -33,11 +35,6 @@ func main() {
 	// if no error. Ping is successful
 	fmt.Println("Ping to database successful, connection is still alive")
 
-	//if mysql -h"db" -u "root" -p"password" -e "quit"; then
-	//  >&2 echo "Mysql is up"
-	//  break
-	//else
-	//  >&2 echo "Mysql is unavailable - sleeping"
-	//  sleep 1
-	//fi
+	out, err := exec.Command(os.Args[1]).Output()
+	fmt.Println(out)
 }

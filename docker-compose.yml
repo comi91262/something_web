@@ -5,6 +5,8 @@ services:
     build: ./app-orm
     environment:
       MYSQL_URL: "mysql://root:password@tcp(db:3306)/world"
+    tty:
+      true
     ports:
       - 3000:3000
     depends_on:
