@@ -10,4 +10,4 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt install -y default-mysql-client
 
-ENTRYPOINT ["./wait_for_db.sh", "./create_database.sh" ]
+ENTRYPOINT ["./wait_for_db.sh", "./create_database.sh", "world"]

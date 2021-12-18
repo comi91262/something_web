@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os/exec"
+	"time"
 
 	// without the underscore _, you will get imported but not
 	// used error message
@@ -14,12 +15,13 @@ import (
 
 const (
 	dbName = "mysql"
-	dbURL  = "root:password@tcp(db:3306)/world"
+	dbURL  = "root:password@tcp(db:3306)/"
 )
 
 func main() {
+	tableName := os.Args[2]
 
-	conn, err := sql.Open(dbName, dbURL)
+	conn, err := sql.Open(dbName, dbURL+tableName)
 	defer conn.Close()
 
 	if err != nil {
@@ -27,13 +29,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := conn.Ping(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	for {
+		if err := conn.Ping(); err != nil {
+			fmt.Println(err)
+			fmt.Println("Mysql is unavailable - sleeping")
+			break
+		}
+		time.Sleep(time.Minute * 1)
 	}
 
-	// if no error. Ping is successful
-	fmt.Println("Ping to database successful, connection is still alive")
+	fmt.Println("Mysql is up")
 
 	out, err := exec.Command(os.Args[1]).Output()
 	fmt.Println(out)

@@ -15,6 +15,6 @@ RUN apk add --no-cache mysql-client
 WORKDIR /var/www
 
 COPY --from=builder /go/bin/app-rest /var/www/app-rest
-COPY --from=builder /go/src/app/wait_for_db.sh /bin/wait_for_db.sh
+COPY --from=builder /go/bin/healthcheck /bin/healthcheck
 
-ENTRYPOINT ["/bin/wait_for_db.sh", "/var/www/app-rest" ]
+ENTRYPOINT ["/bin/healthcheck", "/var/www/app-rest", "world"]

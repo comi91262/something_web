@@ -7,6 +7,9 @@ COPY ./go.sum /go/src/app/go.sum
 WORKDIR /go/src/app
 
 RUN go mod download
+
 # Add the shared packages.
-# COPY ./data /go/src/app/data
-# COPY ./util /go/src/app/util
+COPY ./tools /go/src/app/tools
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+go build -o /go/bin/healthcheck /go/src/app/tools/healthcheck/main.go
