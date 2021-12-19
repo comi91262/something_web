@@ -10,6 +10,7 @@ build: build-dependencies
 
 migrate-db: build-dependencies
 	docker-compose up --build db-world-migration
+	docker-compose up --build db-book-migration
 
 run:
 	docker-compose up $(SERVICE)

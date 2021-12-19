@@ -18,7 +18,7 @@ services:
     ports:
       - 8080:8080
     depends_on:
-        - db
+        - db-book
 
  db-world:
     build: ./db
@@ -39,4 +39,25 @@ services:
       MYSQL_URL: "mysql://root:password@tcp(db-world)/world"
     depends_on:
       - db-world
+
+ db-book:
+    build: ./db
+    environment:
+      MYSQL_DATABASE: book
+      MYSQL_ROOT_PASSWORD: password 
+    ports:
+      - 3307:3306
+
+ db-book-migration:
+    build: ./db-book
+    tty: true
+    environment:
+      MYSQL_HOST: db-book
+      MYSQL_DATABASE: book
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_URL: "mysql://root:password@tcp(db-book)/book"
+    depends_on:
+      - db-book
+
 
