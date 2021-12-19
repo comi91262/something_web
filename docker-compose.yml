@@ -10,7 +10,7 @@ services:
     ports:
       - 3000:3000
     depends_on:
-        - db
+        - db-world
  app-rest:
     build: ./app-rest
     environment:
@@ -19,6 +19,29 @@ services:
       - 8080:8080
     depends_on:
         - db
+
+ db-world:
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: password 
+    ports:
+      - 3306:3306
+
+ db-world-creation:
+    build: ./db-world/creation
+    environment:
+      MYSQL_URL: "mysql://root:password@tcp(db-world:3306)"
+    depends_on:
+      - db-world
+
+ db-world-migration:
+    build: ./db-world/migration
+    environment:
+      MYSQL_URL: "mysql://root:password@tcp(db-world)/world"
+    depends_on:
+      - db-world
+
+    
  migration:
     build: ./migration
     environment:

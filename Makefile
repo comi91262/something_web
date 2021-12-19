@@ -8,8 +8,11 @@ build-dependencies:
 build: build-dependencies
 	docker-compose build $(SERVICE)
 
+create-db: build-dependencies
+	docker-compose up --build db-world-creation
+
 migrate: build-dependencies
-	docker-compose up --build migration
+	docker-compose up --build db-world-migration
 
 run:
 	docker-compose up $(SERVICE)
