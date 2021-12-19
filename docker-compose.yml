@@ -23,34 +23,20 @@ services:
  db-world:
     build: ./db
     environment:
+      MYSQL_DATABASE: world
       MYSQL_ROOT_PASSWORD: password 
     ports:
       - 3306:3306
 
- db-world-creation:
-    build: ./db-world/creation
-    environment:
-      MYSQL_URL: "mysql://root:password@tcp(db-world:3306)"
-    depends_on:
-      - db-world
-
  db-world-migration:
-    build: ./db-world/migration
+    build: ./db-world
+    tty: true
     environment:
+      MYSQL_HOST: db-world
+      MYSQL_DATABASE: world
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
       MYSQL_URL: "mysql://root:password@tcp(db-world)/world"
     depends_on:
       - db-world
 
-    
- migration:
-    build: ./migration
-    environment:
-      MYSQL_URL: "mysql://root:password@tcp(db)/world"
-    depends_on:
-        - db
- db:
-    build: ./db
-    environment:
-      MYSQL_ROOT_PASSWORD: password 
-    ports:
-      - 3306:3306

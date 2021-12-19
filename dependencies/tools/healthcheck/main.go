@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	dbName      = "mysql"
+	driverName  = "mysql"
 	hostEnv     = "MYSQL_HOST"
 	databaseEnv = "MYSQL_DATABASE"
 	userEnv     = "MYSQL_USER"
@@ -27,32 +27,36 @@ func main() {
 	host := os.Getenv(hostEnv)
 	db := os.Getenv(databaseEnv)
 
-	if len(os.Args) < 1 {
-		fmt.Println("Too few arguments")
-		os.Exit(1)
-	}
-	cmd := os.Args[1]
-
 	dbURL := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", user, password, host, db)
 
-	conn, err := sql.Open(dbName, dbURL)
-	defer conn.Close()
-
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
+	var conn *sql.DB
+	var err error
 	for {
-		if err := conn.Ping(); err != nil {
-			fmt.Println(err)
-			fmt.Println("Mysql is unavailable - sleeping")
+		if conn, err = sql.Open(driverName, dbURL); err == nil {
 			break
 		}
-		time.Sleep(time.Minute * 1)
+
+		fmt.Printf("Mysql is unavailable: %v\n", err)
+		time.Sleep(time.Second)
 	}
+	defer conn.Close()
+
+	for {
+		if err = conn.Ping(); err == nil {
+			break
+		}
+
+		fmt.Printf("Mysql is unavailable: %v\n", err)
+		time.Sleep(time.Second)
+	}
+
 	fmt.Println("Mysql is up")
 
+	if len(os.Args) < 1 {
+		os.Exit(0)
+	}
+
+	cmd := os.Args[1]
 	if _, err := exec.Command(cmd).Output(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
