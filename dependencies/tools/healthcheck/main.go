@@ -14,14 +14,28 @@ import (
 )
 
 const (
-	dbName = "mysql"
-	dbURL  = "root:password@tcp(db:3306)/"
+	dbName      = "mysql"
+	hostEnv     = "MYSQL_HOST"
+	databaseEnv = "MYSQL_DATABASE"
+	userEnv     = "MYSQL_USER"
+	passwordEnv = "MYSQL_PASSWORD"
 )
 
 func main() {
-	tableName := os.Args[2]
+	user := os.Getenv(userEnv)
+	password := os.Getenv(passwordEnv)
+	host := os.Getenv(hostEnv)
+	db := os.Getenv(databaseEnv)
 
-	conn, err := sql.Open(dbName, dbURL+tableName)
+	if len(os.Args) < 1 {
+		fmt.Println("Too few arguments")
+		os.Exit(1)
+	}
+	cmd := os.Args[1]
+
+	dbURL := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", user, password, host, db)
+
+	conn, err := sql.Open(dbName, dbURL)
 	defer conn.Close()
 
 	if err != nil {
@@ -37,9 +51,10 @@ func main() {
 		}
 		time.Sleep(time.Minute * 1)
 	}
-
 	fmt.Println("Mysql is up")
 
-	out, err := exec.Command(os.Args[1]).Output()
-	fmt.Println(out)
+	if _, err := exec.Command(cmd).Output(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
