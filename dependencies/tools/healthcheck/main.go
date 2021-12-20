@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"database/sql"
 	"fmt"
 	"os/exec"
@@ -56,9 +57,23 @@ func main() {
 		os.Exit(0)
 	}
 
-	cmd := os.Args[1]
-	if _, err := exec.Command(cmd).Output(); err != nil {
+	cmd := exec.Command(os.Args[1])
+	cmdReader, err := cmd.StdoutPipe()
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	scanner := bufio.NewScanner(cmdReader)
+	done := make(chan bool)
+	go func() {
+		for scanner.Scan() {
+			fmt.Printf(scanner.Text())
+		}
+		done <- true
+	}()
+	cmd.Start()
+	<-done
+	err = cmd.Wait()
+
 }
