@@ -4,9 +4,10 @@ services:
  app-orm:
     build: ./app-orm
     environment:
-      MYSQL_URL: "mysql://root:password@tcp(db:3306)/world"
-    tty:
-      true
+      MYSQL_HOST: db-world
+      MYSQL_DATABASE: world
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
     ports:
       - 3000:3000
     depends_on:
@@ -14,7 +15,10 @@ services:
  app-rest:
     build: ./app-rest
     environment:
-      MYSQL_URL: "mysql://root:password@tcp(db:3306)/rest"
+      MYSQL_HOST: db-book
+      MYSQL_DATABASE: book
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
     ports:
       - 8080:8080
     depends_on:

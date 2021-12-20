@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"text/template"
 
 	"gorm.io/driver/mysql"
@@ -16,6 +18,12 @@ const (
 
 	indexPagePath = "static/index.html"
 	showPagePath  = "static/list.html"
+
+	driverName  = "mysql"
+	hostEnv     = "MYSQL_HOST"
+	databaseEnv = "MYSQL_DATABASE"
+	userEnv     = "MYSQL_USER"
+	passwordEnv = "MYSQL_PASSWORD"
 )
 
 type Country struct {
@@ -36,12 +44,6 @@ type Country struct {
 	Code2          string  `gorm:"char(2); not null; default ''"`
 }
 
-//type Product struct {
-//	gorm.Model
-//Code  string
-//c	Price uint
-//c}
-
 func showTopPage(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles(indexPagePath)
 	if err != nil {
@@ -59,6 +61,21 @@ func showTopPage(w http.ResponseWriter, r *http.Request) {
 	//	t.Execute(w, map[string]bool{"showBanner": inTerm(time.Now(), term)})
 }
 
+func connectDB() (*gorm.DB, error) {
+	user := os.Getenv(userEnv)
+	password := os.Getenv(passwordEnv)
+	host := os.Getenv(hostEnv)
+	db := os.Getenv(databaseEnv)
+
+	dbURL := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, db)
+	conn, err := gorm.Open(mysql.Open(dbURL), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	return conn, nil
+}
+
 func showPage(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles(showPagePath)
 	if err != nil {
@@ -66,28 +83,15 @@ func showPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dsn := "root:password@tcp(db:3306)/world?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	conn, err := connectDB()
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), 500)
+		return
 	}
-	// Migrate the schema
-	// db.AutoMigrate(&Product{})
-
-	// Create
-	// db.Create(&Product{Code: "D42", Price: 100})
 
 	var country Country
-	// Read
-	db.First(&country)
+	conn.First(&country)
 	t.Execute(w, map[string]Country{"country": country})
-	//	term, err := loadTerm(dateTimePath)
-	//	if err != nil {
-	//		t.Execute(w, map[string]bool{"showBanner": false})
-	//		return
-	//	}
-	//
-	//	t.Execute(w, map[string]bool{"showBanner": inTerm(time.Now(), term)})
 }
 
 func main() {
@@ -98,5 +102,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
