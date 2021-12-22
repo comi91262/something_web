@@ -89,14 +89,16 @@ func showPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var country Country
-	conn.First(&country)
-	t.Execute(w, map[string]Country{"country": country})
+	var countries []Country
+	conn.Select([]string{"Name", "Region", "Population"}).Find(&countries)
+
+	t.Execute(w, map[string][]Country{"countries": countries})
 }
 
 func main() {
 	http.HandleFunc(pathTopPage, showTopPage)
 	http.HandleFunc(pathShowPage, showPage)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 
 	err := http.ListenAndServe(":"+defaultPort, nil)
 	if err != nil {

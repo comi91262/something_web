@@ -1,8 +1,24 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
     <head>
         <title>app-orm</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="static/index.css">
     </head>
     <body>
-        {{ .country }}}
+        <table>
+            <tr>
+                <th>国名</th>
+                <th>地域</th>
+                <th>人口</th>
+            </tr>
+            {{ range $i, $country := .countries }}
+            <tr>
+                <td>{{ $country.Name }}</td>
+                <td>{{ $country.Region }}</td>
+                <td>{{ $country.Population }}</td>
+            </tr>
+            {{ end }}
+        </table>
     </body>
 </html>
