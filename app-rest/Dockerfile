@@ -17,4 +17,4 @@ WORKDIR /var/www
 COPY --from=builder /go/bin/app-rest /var/www/app-rest
 COPY --from=builder /go/bin/healthcheck /bin/healthcheck
 
-ENTRYPOINT ["/bin/healthcheck", "/var/www/app-rest", "world"]
+ENTRYPOINT ["/bin/healthcheck", "/var/www/app-rest"]

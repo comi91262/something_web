@@ -21,6 +21,7 @@ const (
 
 	driverName  = "mysql"
 	hostEnv     = "MYSQL_HOST"
+	portEnv     = "MYSQL_PORT"
 	databaseEnv = "MYSQL_DATABASE"
 	userEnv     = "MYSQL_USER"
 	passwordEnv = "MYSQL_PASSWORD"
@@ -66,8 +67,9 @@ func connectDB() (*gorm.DB, error) {
 	password := os.Getenv(passwordEnv)
 	host := os.Getenv(hostEnv)
 	db := os.Getenv(databaseEnv)
+	port := os.Getenv(portEnv)
 
-	dbURL := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, db)
+	dbURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, db)
 	conn, err := gorm.Open(mysql.Open(dbURL), &gorm.Config{})
 	if err != nil {
 		return nil, err
