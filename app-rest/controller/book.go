@@ -29,10 +29,15 @@ func BookAdd(c *gin.Context) {
 
 func BookList(c *gin.Context) {
 	bookService := service.BookService{}
-	BookLists := bookService.GetBookList()
+	bookLists, err := bookService.GetBookList()
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Server Error")
+		return
+	}
+
 	c.JSONP(http.StatusOK, gin.H{
 		"message": "ok",
-		"data":    BookLists,
+		"data":    bookLists,
 	})
 }
 
